@@ -6,7 +6,7 @@ module.exports = async (hre) => {
   const { getNamedAccounts, deployments } = hre;
   const { deployer } = await getNamedAccounts();
   const { log, deploy } = deployments;
-  log("-------Starting deployment --------------------------");
+  log("-------Starting deployment (Basic NFT)--------------------------");
   const args = [];
   const basicNft = await deploy("NFTContract", {
     contract: "BasicNFT",
