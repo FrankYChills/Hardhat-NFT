@@ -43,7 +43,7 @@ const { developmentChains } = require("../helper-hardhat-config");
           await new Promise(async (resolve, reject) => {
             randomIpfsNft.once("NftMinted", async () => {
               try {
-                const tokenUri = await randomIpfsNft.tokenURI("0");
+                const tokenUri = await randomIpfsNft.tokenURI("1");
                 // get the dog uri via token id(0 here cause its the first nft to be generated) (it only gets set after nft is minted)
                 const tokenCounter = await randomIpfsNft.getTokenCounter();
                 assert.equal(tokenUri.toString().includes("ipfs://"), true);

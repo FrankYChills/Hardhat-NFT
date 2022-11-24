@@ -96,8 +96,9 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     {
         // get the user who triggered this function
         address dogOwner = s_requestIdToSender[requestId];
-        uint256 newTokenId = s_tokenCounter;
+
         s_tokenCounter += 1;
+        uint256 newTokenId = s_tokenCounter;
         console.log("Chainlink VRF Responded");
         console.log("word is %s", randomWords[0]);
         // by modding with MAX_CHANCE_VALUE(100) we are ensuring that number will be between 0 and 99

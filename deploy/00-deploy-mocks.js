@@ -7,6 +7,9 @@ const BASE_FEE = ethers.utils.parseEther("0.25"); //0.25 LINKS/Request
 
 const GAS_PRICE_LINK = 1e9; // gas/link
 
+const DECIMALS = "18";
+const INITIAL_PRICE = ethers.utils.parseUnits("2000", "ether");
+
 // this contract is deployed only when we are on localhost or hardhat not on testnet or mainnet
 module.exports = async (hre) => {
   const { getNamedAccounts, deployments } = hre;
@@ -24,6 +27,14 @@ module.exports = async (hre) => {
       log: true,
       args: [BASE_FEE, GAS_PRICE_LINK],
     });
+    log("VRF Mock Deployed");
+    await deploy("MockV3Contract", {
+      contract: "MockV3Aggregator",
+      from: deployer,
+      log: true,
+      args: [DECIMALS, INITIAL_PRICE],
+    });
+    log("V3Mock Mock Deployed");
     log("Mocks Deployed :) ");
     log("----------------------------------------------");
   } else {

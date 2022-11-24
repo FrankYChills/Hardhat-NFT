@@ -13,8 +13,8 @@ contract BasicNFT is ERC721 {
     }
 
     function mintNft() public returns (uint256) {
-        _safeMint(msg.sender, s_tokenCounter);
         s_tokenCounter += 1;
+        _safeMint(msg.sender, s_tokenCounter);
         return s_tokenCounter;
     }
 
