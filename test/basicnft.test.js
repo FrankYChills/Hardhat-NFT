@@ -1,7 +1,8 @@
 const { assert } = require("chai");
 const { network, ethers, deployments } = require("hardhat");
 const { developmentChains } = require("../helper-hardhat-config");
-!developmentChains.includes(network.name)
+var toRun = false;
+!developmentChains.includes(network.name) || !toRun
   ? describe.skip
   : describe("Basic NFT Unit tests", function () {
       let basicNft, deployer, accounts;

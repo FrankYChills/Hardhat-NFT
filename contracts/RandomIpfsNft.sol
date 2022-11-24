@@ -38,6 +38,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     uint256 internal constant MAX_CHANCE_VALUE = 100;
     string[] internal s_dogTokenUris;
     uint256 internal i_MintFee;
+    bool internal s_initialized;
 
     //Events
     event NftRequested(uint256 indexed requestId, address requester);
@@ -65,15 +66,17 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         s_dogTokenUris = dogTokenUris;
         i_MintFee = mintFee;
         s_tokenCounter = 0;
+        s_initialized = true;
     }
 
-    // we are using requestNft for requesting random words
     function requestNft() public payable returns (uint256 requestId) {
-        // Will revert if subscription is not set and funded.
         if (msg.value < i_MintFee) {
             revert RandomIpfsNft__NeedMoreETH();
         }
         console.log("Fee Paid. Getting Random Number from Chainlink VRF");
+        // Will revert if subscription is not set and funded.
+        // we are using requestNft for requesting random words
+
         requestId = i_vrfCoordinator.requestRandomWords(
             i_gas,
             i_subscriptionId,
@@ -102,11 +105,12 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         //0-99
         //0-9 ->PUG,10-29 -> Shiba Inu and 30-99 -> St. Bernard
         Breed dogBreed = getBreedFromModdedRng(moddedRng);
+        // dogbreed is Breed type of value 0|1|2 .Convert that into uint256
         console.log("Got dog breed.Minting an NFT");
         // Mint an NFT for the user
         _safeMint(dogOwner, newTokenId);
         // set the NFT URI via tokenId . URI's basically points to JSON file
-        // we can convert back enum values to the index they are on as -
+
         _setTokenURI(newTokenId, s_dogTokenUris[uint256(dogBreed)]);
         emit NftMinted(dogBreed, dogOwner);
     }
@@ -122,13 +126,11 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         // find moddedRng value as an index in chanceArray
         //50
         for (uint256 i = 0; i < chanceArray.length; i++) {
-            if (
-                moddedRng >= cummulativeSum &&
-                moddedRng < cummulativeSum + chanceArray[i]
-            ) {
+            if (moddedRng >= cummulativeSum && moddedRng < chanceArray[i]) {
+                // returns 0|1|2
                 return Breed(i);
             }
-            cummulativeSum += chanceArray[i];
+            cummulativeSum = chanceArray[i];
         }
         // we have to return some index for sure but incase it doesnt return anything revert with error
         revert RandomIpfsNft__RangeOutOfBounds();
@@ -161,5 +163,9 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
 
     function getTokenCounter() public view returns (uint256) {
         return s_tokenCounter;
+    }
+
+    function getInitialized() public view returns (bool) {
+        return s_initialized;
     }
 }

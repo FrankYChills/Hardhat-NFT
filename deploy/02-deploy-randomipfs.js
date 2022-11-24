@@ -31,15 +31,16 @@ module.exports = async (hre) => {
   log("-------Starting deployment (RandomIPFS NFT)--------------------------");
   const chainId = network.config.chainId;
   var vrfCoordinatorV2MockAddress;
+  var vrfCoordinatorV2Mock;
   var subscriptionId;
-  let tokenUris;
-  /*
-  should be according to the enum indexes of dogs in backend 
+  // let tokenUris;
+
+  // should be according to the enum indexes of dogs in backend
   let tokenUris = [
-  'ipfs://QmTrUxzZwxjmhTnJqRCP4eaW95MaNmiHr9ZFLykurhT2hv',  // pug
-  'ipfs://QmcPtS5LpWxv6nSA6rmyMmQduvFRriSXkUDPHcjveDKb55', // shiba
-  'ipfs://QmW7Xp8Jcxhou2FxVVQwktXRpzuEGEsATSPdfm4gpMbGUQ' // st bernard
-] */
+    "ipfs://QmTrUxzZwxjmhTnJqRCP4eaW95MaNmiHr9ZFLykurhT2hv", // pug
+    "ipfs://QmcPtS5LpWxv6nSA6rmyMmQduvFRriSXkUDPHcjveDKb55", // shiba
+    "ipfs://QmW7Xp8Jcxhou2FxVVQwktXRpzuEGEsATSPdfm4gpMbGUQ", // st bernard
+  ];
   if (process.env.UPLOAD_TO_PINATA === "true") {
     tokenUris = await handleTokenUris();
   }
@@ -47,18 +48,21 @@ module.exports = async (hre) => {
     console.log("Finding VRF contract on local network");
 
     // get the deployed mock contract (contract for randomness)
-    const vrfCoordinatorV2Mock = await ethers.getContract("VRFContract");
+    vrfCoordinatorV2Mock = await ethers.getContract("VRFContract");
     console.log("Found the V2 Mock Contract");
     vrfCoordinatorV2MockAddress = vrfCoordinatorV2Mock.address;
     // create a subscription for using VRF
+    console.log("creating subscription....");
     const tx = await vrfCoordinatorV2Mock.createSubscription();
     const txReceipt = await tx.wait(1);
     subscriptionId = txReceipt.events[0].args.subId;
     // fund the subscription using subId and amount
+    console.log("Subscription created.Funding subscription ...");
     await vrfCoordinatorV2Mock.fundSubscription(
       subscriptionId,
       VRF_SUB_FUND_AMOUNT
     );
+    console.log("Funded");
   } else {
     console.log("Finding VRF contract on TestNet (Goerli)");
     vrfCoordinatorV2MockAddress = networkConfig[chainId]["vrfCoordinatorV2"];
@@ -82,6 +86,9 @@ module.exports = async (hre) => {
     waitConfirmations: network.config.blockConfirmations,
   });
   log("Contract Deployed (RandomIPFSNFT)");
+  console.log("Adding RandomIPFS as a consumer to VRF ...");
+  await vrfCoordinatorV2Mock.addConsumer(subscriptionId, randomIpfsNft.address);
+  console.log("Consumer added....");
   log("---------------------------------------------------");
   if (
     !developmentChains.includes(network.name) &&
