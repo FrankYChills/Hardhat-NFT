@@ -1,7 +1,8 @@
 const { assert, expect } = require("chai");
 const { ethers } = require("hardhat");
 const { developmentChains } = require("../helper-hardhat-config");
-!developmentChains.includes(network.name)
+var toRun = false;
+!developmentChains.includes(network.name) || !toRun
   ? describe.skip
   : describe("Random IPFS Unit Tests", function () {
       let randomIpfsNft, deployer, vrfCoordinatorV2Mock;

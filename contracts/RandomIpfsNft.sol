@@ -97,7 +97,6 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         // get the user who triggered this function
         address dogOwner = s_requestIdToSender[requestId];
 
-        s_tokenCounter += 1;
         uint256 newTokenId = s_tokenCounter;
         console.log("Chainlink VRF Responded");
         console.log("word is %s", randomWords[0]);
@@ -110,6 +109,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         console.log("Got dog breed.Minting an NFT");
         // Mint an NFT for the user
         _safeMint(dogOwner, newTokenId);
+        s_tokenCounter += 1;
         // set the NFT URI via tokenId . URI's basically points to JSON file
 
         _setTokenURI(newTokenId, s_dogTokenUris[uint256(dogBreed)]);

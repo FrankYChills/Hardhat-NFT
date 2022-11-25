@@ -85,7 +85,7 @@ module.exports = async (hre) => {
     log: true,
     waitConfirmations: network.config.blockConfirmations,
   });
-  log("Contract Deployed (RandomIPFSNFT)");
+  console.log("Contract Deployed (RandomIPFSNFT)");
   console.log("Adding RandomIPFS as a consumer to VRF ...");
   await vrfCoordinatorV2Mock.addConsumer(subscriptionId, randomIpfsNft.address);
   console.log("Consumer added....");

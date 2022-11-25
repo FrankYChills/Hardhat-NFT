@@ -29,6 +29,8 @@ module.exports = async (hre) => {
     encoding: "utf8",
   });
   args = [ethUsdPriceFeedAddress, lowSvg, highSvg];
+  log("--------------------------------------------------");
+  log("Deploying DynamicSVGNFT Contract .....");
   const dynamicSvgNft = await deploy("DynamicSvgContract", {
     contract: "DynamicSvgNft",
     from: deployer,
