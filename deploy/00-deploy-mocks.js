@@ -41,4 +41,4 @@ module.exports = async (hre) => {
     log("Testnet detected ..");
   }
 };
-module.exports.tags = ["all", "mocks"];
+module.exports.tags = ["all", "mocks", "main"];

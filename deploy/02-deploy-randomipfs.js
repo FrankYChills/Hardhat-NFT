@@ -65,8 +65,10 @@ module.exports = async (hre) => {
     console.log("Funded");
   } else {
     console.log("Finding VRF contract on TestNet (Goerli)");
-    vrfCoordinatorV2MockAddress = networkConfig[chainId]["vrfCoordinatorV2"];
+    vrfCoordinatorV2MockAddress =
+      networkConfig[chainId]["vrfCoordinatorV2Address"];
     subscriptionId = networkConfig[chainId].subscriptionId;
+    // use my subscription on chainlink vrf.Add consumer further
   }
   log("--------------------------------------------------");
   log("Deploying RandomIPFSNFT Contract .....");
@@ -86,10 +88,17 @@ module.exports = async (hre) => {
     waitConfirmations: network.config.blockConfirmations,
   });
   console.log("Contract Deployed (RandomIPFSNFT)");
-  console.log("Adding RandomIPFS as a consumer to VRF ...");
-  await vrfCoordinatorV2Mock.addConsumer(subscriptionId, randomIpfsNft.address);
-  console.log("Consumer added....");
-  log("---------------------------------------------------");
+  // add consumer via code for ONLY LOCAL DEPLOYMENT
+  // USE CHAINLINK WEB UI TO ADD THIS CONTRACT AS CONSUMER IN TESTNETS
+  if (developmentChains.includes(network.name)) {
+    console.log("Adding RandomIPFS as a consumer to VRF ...");
+    await vrfCoordinatorV2Mock.addConsumer(
+      subscriptionId,
+      randomIpfsNft.address
+    );
+    console.log("Consumer added....");
+    log("---------------------------------------------------");
+  }
   if (
     !developmentChains.includes(network.name) &&
     process.env.ETHERSCAN_API_KEY
@@ -126,4 +135,4 @@ async function handleTokenUris() {
   return tokenUris;
 }
 
-module.exports.tags = ["all", "randomipfs"];
+module.exports.tags = ["all", "randomipfs", "main"];

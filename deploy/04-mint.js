@@ -2,6 +2,8 @@ const { ethers, network } = require("hardhat");
 const { developmentChains } = require("../helper-hardhat-config");
 
 // Mints each NFTs
+// for local minting run this straight
+//but for testnets first deploy all three contracts(NFts) then for randomIPFS contract add that as a consumer to chainlink VRF then run this.
 module.exports = async (hre) => {
   const { getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
@@ -79,3 +81,5 @@ module.exports = async (hre) => {
     )}`
   );
 };
+
+module.exports.tags = ["all", "mint"];

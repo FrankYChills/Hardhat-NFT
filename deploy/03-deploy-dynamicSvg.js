@@ -4,6 +4,7 @@ const {
   networkConfig,
 } = require("../helper-hardhat-config");
 const fs = require("fs");
+const { verify } = require("../utils/verify");
 
 module.exports = async (hre) => {
   const { getNamedAccounts, deployments } = hre;
@@ -50,4 +51,4 @@ module.exports = async (hre) => {
   }
 };
 
-module.exports.tags = ["all", "dynamicsvg"];
+module.exports.tags = ["all", "dynamicsvg", "main"];
